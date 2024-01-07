@@ -12,8 +12,26 @@ NOTE: The Google Drive API does not allow suppressing notifications for change o
 
 ### Setup
 
-    git clone https://github.com/davidstrauss/google-drive-recursive-ownership
-    pip install --upgrade google-api-python-client oauth2client six
+```shell
+git clone https://github.com/svaponi/google-drive-recursive-ownership
+cd google-drive-recursive-ownership
+pip install -r requirements.txt
+```
+
+Alternatively, if you have [poetry](https://python-poetry.org/docs/) installed, run:
+
+```shell
+git clone https://github.com/svaponi/google-drive-recursive-ownership
+cd google-drive-recursive-ownership
+poetry install
+```
+
+To update the `requirements.txt`, run:
+
+```commandline
+poetry export -f requirements.txt --output requirements.txt --without-hashes
+```
+
 
 ### Usage
 
