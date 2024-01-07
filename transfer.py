@@ -132,7 +132,7 @@ def process_all_files(
     if callback_args is None:
         callback_args = []
 
-    print("Gathering file listings for prefix {}...".format(current_prefix))
+    print("Listing: {} ...".format(os.path.sep.join(current_prefix)))
 
     page_token = None
     while True:
@@ -146,16 +146,18 @@ def process_all_files(
                 # pprint.pprint(item)
                 if item["kind"] == "drive#file":
                     if current_prefix[: len(minimum_prefix)] == minimum_prefix:
+                        _segments = current_prefix + [item["title"]]
                         print(
-                            "File: {} ({}, {})".format(
-                                item["title"], current_prefix, item["id"]
+                            "File: {} ({})".format(
+                                os.path.sep.join(_segments), item["id"]
                             )
                         )
                         callback(service, item, current_prefix, **callback_args)
                     if item["mimeType"] == "application/vnd.google-apps.folder":
+                        _segments = current_prefix + [item["title"]]
                         print(
-                            "Folder: {} ({}, {})".format(
-                                item["title"], current_prefix, item["id"]
+                            "Folder: {} ({})".format(
+                                os.path.sep.join(_segments), item["id"]
                             )
                         )
                         next_prefix = current_prefix + [item["title"]]
@@ -191,21 +193,20 @@ def main():
     show_already_owned = (
         False if len(sys.argv) > 3 and six.text_type(sys.argv[3]) == "false" else True
     )
-    print(
-        'Changing all files at path "{}" to owner "{}"'.format(
-            minimum_prefix, new_owner
-        )
-    )
+    print(f'Changing all files at path "{minimum_prefix}" to owner "{new_owner}"')
     minimum_prefix_split = minimum_prefix.split(os.path.sep)
-    print("Prefix: {}".format(minimum_prefix_split))
+    print(f"Prefix: {minimum_prefix_split}")
     service = get_drive_service()
     permission_id = get_permission_id_for_email(service, new_owner)
-    print("User {} is permission ID {}.".format(new_owner, permission_id))
+    print(f"User {new_owner} is permission ID {permission_id}.")
     process_all_files(
         service,
         grant_ownership,
         {"permission_id": permission_id, "show_already_owned": show_already_owned},
         minimum_prefix_split,
+    )
+    print(
+        f"Go to https://drive.google.com/drive/search?q=pendingowner:me (as {new_owner}), select all files, click 'Share' and accept ownership."
     )
     # print(files)
 
