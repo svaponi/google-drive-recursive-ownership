@@ -154,12 +154,6 @@ def process_all_files(
                         )
                         callback(service, item, current_prefix, **callback_args)
                     if item["mimeType"] == "application/vnd.google-apps.folder":
-                        _segments = current_prefix + [item["title"]]
-                        print(
-                            "Folder: {} ({})".format(
-                                os.path.sep.join(_segments), item["id"]
-                            )
-                        )
                         next_prefix = current_prefix + [item["title"]]
                         comparison_length = min(len(next_prefix), len(minimum_prefix))
                         if (
@@ -174,7 +168,14 @@ def process_all_files(
                                 next_prefix,
                                 item["id"],
                             )
-                            callback(service, item, current_prefix, **callback_args)
+                        else:
+                            _segments = current_prefix + [item["title"]]
+                            print(
+                                "Ignore folder: {} ({})".format(
+                                    os.path.sep.join(_segments), item["id"]
+                                )
+                            )
+
             page_token = children.get("nextPageToken")
             if not page_token:
                 break
@@ -195,7 +196,7 @@ def main():
     )
     print(f'Changing all files at path "{minimum_prefix}" to owner "{new_owner}"')
     minimum_prefix_split = minimum_prefix.split(os.path.sep)
-    print(f"Prefix: {minimum_prefix_split}")
+    print(f"Prefix: {minimum_prefix}")
     service = get_drive_service()
     permission_id = get_permission_id_for_email(service, new_owner)
     print(f"User {new_owner} is permission ID {permission_id}.")
