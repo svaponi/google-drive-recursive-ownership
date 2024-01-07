@@ -182,6 +182,10 @@ def process_all_files(
 
 
 def main():
+    if len(sys.argv) < 3:
+        raise ValueError(
+            "Missing args, see https://github.com/svaponi/google-drive-recursive-ownership?tab=readme-ov-file#usage"
+        )
     minimum_prefix = six.text_type(sys.argv[1])
     new_owner = six.text_type(sys.argv[2])
     show_already_owned = (
