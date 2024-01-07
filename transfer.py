@@ -87,7 +87,8 @@ def grant_ownership(service, drive_item, prefix, permission_id, show_already_own
             .get(fileId=drive_item["id"], permissionId=permission_id)
             .execute()
         )
-        permission["role"] = "owner"
+        permission["role"] = "writer"
+        permission["pendingOwner"] = "true"
         print("    Upgrading existing permissions to ownership.")
         return (
             service.permissions()
